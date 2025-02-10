@@ -1,0 +1,10 @@
+extends ../layout
+mixin articleItem(article)
+	li
+		a(href="http://localhost:3000/detail/" + article.id) #{article.title}
+
+
+block content
+	ul
+		each article in articles
+			+articleItem(article)

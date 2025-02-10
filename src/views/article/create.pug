@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+	form(action="http://localhost:3000/create" method="POST")
+		label(for="title") Titre
+		input(type="text" id="title" name="title" required)
+
+		label(for="content") Contenu
+		textarea(id="content" name="content" rows="4" required)
+
+		button(type="submit") Envoyer
