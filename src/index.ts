@@ -7,6 +7,8 @@ import session from 'express-session';
 import UserRouter from './routes/UserRouter';
 import HomeRouter from './routes/HomeRouter';
 import SessionMiddleware from './middlewares/sessionMiddleware';
+import AuthMiddleware from './middlewares/authMiddleware';
+import OwnerRouter from './routes/OwnerRouter';
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +35,7 @@ app.use(SessionMiddleware);
 app.use(HomeRouter);
 app.use('/article', ArticleRouter);
 app.use(UserRouter);
+app.use('/owner', AuthMiddleware, OwnerRouter);
 
 app.listen(port, () => {
 	console.log(`[server]: Server is running at http://localhost:${port}/`);

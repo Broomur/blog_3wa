@@ -1,0 +1,8 @@
+extends ../layout
+
+block content 
+	form(action="/owner/update" method="POST")
+		label(for="owner") Auteur·rice
+		input(type="checkbox" id="owner" name="owner" checked=owner)
+
+		button(type="submit") Envoyer

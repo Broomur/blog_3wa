@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as argon2 from 'argon2';
 import User from '../models/User';
+import Owner from '../models/Owner';
 
 class UserController {
 	static formRegister(req: Request, res: Response): void {
@@ -48,8 +49,10 @@ class UserController {
 				res.redirect('/login')
 			} else if (isMatch) {
 				req.session.auth = true;
+				req.session.userId = user.id;
 				req.session.message = { status: true, message: 'Connexion réussie' };
-				res.redirect('/list');
+				req.session.owner = !!await Owner.findByPk(user.id);
+				res.redirect('article/list');
 			}
 		}
 	}

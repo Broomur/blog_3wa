@@ -17,7 +17,7 @@ class ArticleController {
 					owner_id: 1
 				}
 			);
-			res.redirect(`/detail/${article.id}`);
+			res.redirect(`/article/detail/${article.id}`);
 		} catch (error) {
 			res.render('misc/erreur', {title: '500', message: 'erreur serveur :('})
 		}
@@ -26,7 +26,7 @@ class ArticleController {
 	static async detail(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.path.split('/')[2]);
 		try {
-			const article = await Article.findByPk(articleId);
+			const article = await Article.findByPk(articleId, { raw: true });
 			await CommentController.articleComments(articleId)
 			res.render('article/detail', {title: `détail de l'article ${articleId}`, article});
 		} catch {
@@ -35,7 +35,7 @@ class ArticleController {
 	}
 
 	static async list(req: Request, res: Response): Promise<void> {
-		const articles = await Article.findAll();
+		const articles = await Article.findAll({ raw: true });
 		res.render('article/list', {title: 'liste des articles', articles})
 	}
 }

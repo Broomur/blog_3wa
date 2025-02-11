@@ -16,7 +16,9 @@ html(lang="fr")
 					+menuItem('Home', '/')
 					+menuItem('Articles', '/article/list')
 					if session.auth
-						+menuItem('Nouvel article', '/create')
+						if session.owner
+							+menuItem('Nouvel article', '/article/create')
+						+menuItem('Paramètres', '/owner/update')
 						+menuItem('Déconnexion', '/logout')
 					else 
 						+menuItem('Connexion', '/login')
