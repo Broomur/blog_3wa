@@ -28,7 +28,7 @@
 ## DB
 
 ```shell
-docker run -d --rm --name postgres_blog -p 5432:5432 -e POSTGRES_USER=St34m_P1n34ppl3 -e POSTGRES_PASSWORD=M4gn1f1c3nt_L1tch1 -e POSTGRES_DB=blog postgres:latest
+docker run -d --rm --name postgres_blog -p 5432:5432 -e POSTGRES_USER=St34m_P1n34ppl3 -e POSTGRES_PASSWORD=M4gn1f1c3nt_L1tch1 -e POSTGRES_DB=blog -v postgres_blog_data:/var/lib/postgresql/data postgres:latest
 ```
 
 ```sql
