@@ -2,3 +2,4 @@ dist
 node_modules
 uml_blog.drawio
 *.bkp
+.DS_Store
