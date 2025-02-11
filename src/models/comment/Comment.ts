@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../db_connection';
-import User from './User';
-import Article from './Article';
+import { sequelize } from '../../db_connection';
+import User from '../user/User';
+import Article from '../article/Article';
 
 class Comment extends Model {
 	declare id: number;

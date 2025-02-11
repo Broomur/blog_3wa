@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import * as argon2 from 'argon2';
-import User from '../models/User';
-import Owner from '../models/Owner';
+import UserRepository from '../models/user/UserRepository';
+import OwnerRepository from '../models/owner/OwnerRepository';
 
 class UserController {
 	static formRegister(req: Request, res: Response): void {
@@ -16,13 +15,8 @@ class UserController {
 			});
 			return;
 		}
-		const newUser = {
-			nickname,
-			mail,
-			password: password
-		}
 		try { 
-			const user = await User.create(newUser);
+			await UserRepository.create(nickname, mail, password);
 			res.redirect('/login');
 		} catch {
 			res.status(500).json({
@@ -41,9 +35,9 @@ class UserController {
 			req.session.message = { status: false, message: "Merci de remplir tout les champs" };
 			res.redirect("/login");
 		}
-		const user = await User.findOne({ where: { mail: mail } });
+		const user = await UserRepository.getByMail(mail);
 		if (user) {
-			const isMatch = await argon2.verify(user.password, password);
+			const isMatch = await UserRepository.verifyPassword(user, password);
 			if (!isMatch) {
 				req.session.message = { status: false, message: 'Password incorrect' };
 				res.redirect('/login')
@@ -51,7 +45,7 @@ class UserController {
 				req.session.auth = true;
 				req.session.userId = user.id;
 				req.session.message = { status: true, message: 'Connexion réussie' };
-				req.session.owner = !!await Owner.findByPk(user.id);
+				req.session.owner = !!await OwnerRepository.getById(user.id);
 				res.redirect('article/list');
 			}
 		}

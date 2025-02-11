@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../db_connection';
-import User from './User';
+import { sequelize } from '../../db_connection';
+import User from '../user/User';
 
 class Owner extends Model {
 	declare id: number;

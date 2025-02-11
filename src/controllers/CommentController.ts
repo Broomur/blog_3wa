@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import Comment from "../models/Comment";
+import Comment from "../models/comment/Comment";
+import CommentRepository from '../models/comment/CommentRepository';
 
 class CommentController {
 	static formCreate(req: Request, res: Response): void {
@@ -11,14 +12,14 @@ class CommentController {
 		const articleId = Number(req.query['article']);
 		const { content } = req.body
 		try {
-		const comment = await Comment.create(
-			{
-			content,
-			user_id: req.session.userId,
-			article_id: articleId
+			if (req.session.userId) {
+				await CommentRepository.create(
+					content,
+					req.session.userId,
+					articleId
+				)
+				res.redirect(`/article/detail/${articleId}`)
 			}
-		)
-		res.redirect(`/article/detail/${articleId}`)
 		} catch (error) {
 				res.render('misc/erreur', {title: '500', message: 'erreur serveur :('})
 		}
@@ -26,21 +27,16 @@ class CommentController {
 
 	static async formUpdate(req: Request, res: Response): Promise<void> {
 		const commentId = Number(req.query['id']);
-		const comment = await Comment.findByPk(commentId);
+		const comment = await CommentRepository.getById(commentId);
 		res.render('comment/update', {title: 'Editer un commentaire', comment});
 	}
 
 	static async updateComment(req: Request, res: Response): Promise<void> {
 		try {
 			const commentId = Number(req.query['id']);
-			console.log(commentId)
-			const comment = await Comment.findByPk(commentId);
 			const { content } = req.body;
-			if (comment) {
-				comment.content = content;
-				await comment.save();
-				res.redirect(`/article/detail/${comment.article_id}`);
-			}
+			const comment = await CommentRepository.update(commentId, { content });
+			res.redirect(`/article/detail/${comment[1][0].article_id}`);
 		} catch {
 			res.status(404).redirect(`/article/list`);
 		}
@@ -49,12 +45,8 @@ class CommentController {
 	static async deleteComment(req: Request, res: Response): Promise<void> {
 	  try {
 			const commentId = Number(req.query['id']);
-			const comment = await Comment.findByPk(commentId);
-			if (comment) {
-				const articleId = comment.article_id;
-				await comment.destroy();
-				res.redirect(`/article/detail/${articleId}`);
-			}
+			await CommentRepository.delete(commentId);
+			res.redirect(`/article/list`);
 		}
 		catch(error) {
 			res.status(404).redirect(`/article/list`);

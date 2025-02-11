@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
-import Article from '../models/Article';
+import Article from '../models/article/Article';
 import CommentController from './CommentController';
-import Comment from '../models/Comment';
+import Comment from '../models/comment/Comment';
+import ArticleRepository from '../models/article/ArticleRepository';
+import CommentRepository from '../models/comment/CommentRepository';
 
 class ArticleController {
 	static form(req: Request, res: Response): void {
@@ -11,14 +13,16 @@ class ArticleController {
 	static async create(req: Request, res: Response): Promise<void> {
 		const { title, content } = req.body;
 		try {
-			const article = await Article.create(
-				{
-					title,
-					content,
-					owner_id: req.session.userId
-				}
-			);
-			res.redirect(`/article/detail/${article.id}`);
+			const owner_id = req.session.userId;
+			if (owner_id) {
+				const article = await ArticleRepository.create(
+						title,
+						content,
+						owner_id
+				);
+				res.redirect(`/article/detail/${article.id}`);
+			} else
+			res.status(403).redirect('/');
 		} catch (error) {
 			res.render('misc/erreur', {title: '500', message: 'erreur serveur :('})
 		}
@@ -27,11 +31,11 @@ class ArticleController {
 	static async detail(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.path.split('/')[2]);
 		try {
-			const article = await Article.findByPk(articleId, { raw: true });
+			const article = await ArticleRepository.getById(articleId);
 			if (article) {
 				if (req.session.userId && req.session.userId === article.owner_id)
 					Object.assign(article, { editable: true })
-				const comments = await Comment.findAll({ where: { article_id: article.id }, raw: true });
+				const comments = await CommentRepository.getAll();
 				for (let comment of comments)
 					if (req.session.userId && comment.user_id === req.session.userId)
 						Object.assign(comment, { editable: true});
@@ -43,27 +47,22 @@ class ArticleController {
 	}
 
 	static async list(req: Request, res: Response): Promise<void> {
-		const articles = await Article.findAll({ raw: true });
+		const articles = await ArticleRepository.getAll();
 		res.render('article/list', {title: 'liste des articles', articles})
 	}
 
 	static async formUpdate(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
-		const article = await Article.findByPk(articleId, { raw: true });
+		const article = await ArticleRepository.getById(articleId);
 		res.render('article/update', {title: 'Editer un article', article});
 	}
 
 	static async updateArticle(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
 		try {
-			const article = await Article.findByPk(articleId);
 			const { title, content } = req.body;
-			if (article) {
-				article.title = title;
-				article.content = content;
-				await article.save();
-				res.redirect(`/article/detail/${article.id}`);
-			}
+			await ArticleRepository.update(articleId, { title, content });
+			res.redirect(`/article/detail/${articleId}`);
 		} catch {
 			res.status(500).redirect(`/article/detail/${articleId}`);
 		}
@@ -71,13 +70,11 @@ class ArticleController {
 
 	static async delete(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
-		const article = await Article.findByPk(articleId);
-		if (article) {
-			await article.destroy();
+		try {
+			await ArticleRepository.delete(articleId);
 			res.redirect('/article/list');
-		}
-		else {
-			res.status(500).redirect(`/article/detail/${articleId}`);
+		} catch {
+			res.status(500).redirect('/');
 		}
 	}
 }

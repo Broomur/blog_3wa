@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../db_connection';
-import Owner from './Owner';
+import { sequelize } from '../../db_connection';
+import Owner from '../owner/Owner';
 
 class Article extends Model {
   declare id: number;

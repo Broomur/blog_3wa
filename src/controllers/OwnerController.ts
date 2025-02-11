@@ -1,25 +1,28 @@
 import { Request, Response } from 'express';
-import Owner from '../models/Owner';
+import OwnerRepository from '../models/owner/OwnerRepository';
 
 class OwnerController {
 	static async form(req: Request, res: Response): Promise<void> {
-		const owner = await Owner.findByPk(req.session.userId);
-		res.render('owner/update', {owner: !!owner});
+		if (req.session.userId) {
+			const owner = await OwnerRepository.getById(req.session.userId);
+			res.render('owner/update', {owner: !!owner});
+		}
 	}
 
 	static async update(req: Request, res: Response): Promise<void> {
-		const owner = await Owner.findByPk(req.session.userId);
-		if (owner) {
-			req.session.owner = false;
-			owner.destroy();
-			res.render('owner/update', {owner: false});
+		if (req.session.userId) {
+			const owner = await OwnerRepository.getById(req.session.userId);
+			if (owner) {
+				req.session.owner = false;
+				owner.destroy();
+				res.render('owner/update', {owner: false});
+			}
+			else {
+				req.session.owner = true;
+				OwnerRepository.create(req.session.userId);
+				res.render('owner/update', {owner: true});
+			}
 		}
-		else {
-			req.session.owner = true;
-			Owner.create({id: req.session.userId});
-			res.render('owner/update', {owner: true});
-		}
-
 	}
 }
 

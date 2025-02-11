@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../db_connection';
+import { sequelize } from '../../db_connection';
 import * as argon2 from 'argon2';
 
 class User extends Model {
