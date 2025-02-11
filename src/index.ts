@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import session from 'express-session';
 import UserRouter from './routes/UserRouter';
 import HomeRouter from './routes/HomeRouter';
+import SessionMiddleware from './middlewares/sessionMiddleware';
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -26,10 +27,11 @@ app.use(session({
 	secret: process.env.SECRET || 'B4n4n4',
 	resave: false,
 	saveUninitialized: false
-}))
+}));
+app.use(SessionMiddleware);
 
 app.use(HomeRouter);
-app.use(ArticleRouter);
+app.use('/article', ArticleRouter);
 app.use(UserRouter);
 
 app.listen(port, () => {

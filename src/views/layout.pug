@@ -14,8 +14,9 @@ html(lang="fr")
 			nav
 				ul
 					+menuItem('Home', '/')
-					+menuItem('Articles', '/list')
-					if auth
+					+menuItem('Articles', '/article/list')
+					if session.auth
+						+menuItem('Nouvel article', '/create')
 						+menuItem('Déconnexion', '/logout')
 					else 
 						+menuItem('Connexion', '/login')

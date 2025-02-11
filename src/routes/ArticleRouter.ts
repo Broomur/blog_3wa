@@ -4,6 +4,7 @@ import AuthMiddleware from '../middlewares/authMiddleware';
 
 const ArticleRouter = express.Router();
 
+
 ArticleRouter.get('/create', AuthMiddleware, PostController.form);
 ArticleRouter.post('/create', AuthMiddleware, PostController.create);
 ArticleRouter.get('/detail/:id', PostController.detail);
