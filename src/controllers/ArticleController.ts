@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Article from '../models/Article';
+import CommentController from './CommentController';
 
 class ArticleController {
 	static form(req: Request, res: Response): void {
@@ -24,11 +25,13 @@ class ArticleController {
 
 	static async detail(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.path.split('/')[2]);
-		const article = await Article.findByPk(articleId);
-		if (article)
+		try {
+			const article = await Article.findByPk(articleId);
+			await CommentController.articleComments(articleId)
 			res.render('article/detail', {title: `détail de l'article ${articleId}`, article});
-		else
+		} catch {
 			res.render('misc/erreur', {title: '404', message: 'article non trouvé :('});
+		}
 	}
 
 	static async list(req: Request, res: Response): Promise<void> {
