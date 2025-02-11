@@ -3,7 +3,14 @@ import { sequelize } from '../db_connection';
 import User from './User';
 import Article from './Article';
 
-class Comment extends Model {};
+class Comment extends Model {
+	declare id: number;
+	declare content: string;
+	declare user_id: number;
+	declare article_id: number;
+	declare created_at: Date;
+	declare updated_at: Date;
+};
 
 Comment.init(
 	{
@@ -12,18 +19,33 @@ Comment.init(
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true,
+			get() {
+				return this.getDataValue('id');
+			}
 		},
 		content: {
 			type: DataTypes.TEXT,
 			allowNull: false,
+			get() {
+				return this.getDataValue('content');
+			},
+			set(val: string) {
+				this.setDataValue('content', val);
+			}
 		},
 		user_id: {
 			type: DataTypes.INTEGER,
-			allowNull: false
+			allowNull: false,
+			get() {
+				return this.getDataValue('user_id');
+			}
 		},
 		article_id: {
 			type: DataTypes.INTEGER,
-			allowNull: false
+			allowNull: false,
+			get() {
+				return this.getDataValue('article_id');
+			}
 		}
 	},
 	{

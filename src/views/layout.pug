@@ -1,6 +1,6 @@
 mixin menuItem(itemTitle, href)
 	li(class=(title === itemTitle) ? "active link": "link")
-		a(href=href) #(itemTitle)
+		a(href=href) #{itemTitle}
 
 doctype html
 html(lang="fr")
@@ -13,7 +13,13 @@ html(lang="fr")
 		header
 			nav
 				ul
-					//- +menuItem('Home', '/')
+					+menuItem('Home', '/')
+					+menuItem('Articles', '/list')
+					if auth
+						+menuItem('Déconnexion', '/logout')
+					else 
+						+menuItem('Connexion', '/login')
+						+menuItem('Inscription', '/register')
 	
 		main.container
 			h1#title #{title}

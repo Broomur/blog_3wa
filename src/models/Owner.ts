@@ -2,7 +2,11 @@ import { DataTypes, Model } from 'sequelize';
 import { sequelize } from '../db_connection';
 import User from './User';
 
-class Owner extends Model {}
+class Owner extends Model {
+	declare id: number;
+	declare created_at: Date;
+	declare updated_at: Date;
+}
 
 Owner.init(
 	{
@@ -10,6 +14,9 @@ Owner.init(
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			primaryKey: true,
+			get() {
+				return this.getDataValue('id');
+			}
 		}
 	},
 	{

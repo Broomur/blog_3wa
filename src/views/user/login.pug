@@ -1,0 +1,11 @@
+extends ../layout
+
+block content 
+	form(action="/login" method="POST")
+		label(for="mail") Mail 
+		input(type="mail" id="mail" name="mail" required)
+
+		label(for="password") Password 
+		input(type="password" id="password" name="password" required)
+
+		button(type="submit") Connexion

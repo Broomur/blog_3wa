@@ -4,6 +4,8 @@ import ArticleRouter from './routes/ArticleRouter';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
+import UserRouter from './routes/UserRouter';
+import HomeRouter from './routes/HomeRouter';
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -26,8 +28,9 @@ app.use(session({
 	saveUninitialized: false
 }))
 
-
+app.use(HomeRouter);
 app.use(ArticleRouter);
+app.use(UserRouter);
 
 app.listen(port, () => {
 	console.log(`[server]: Server is running at http://localhost:${port}/`);
