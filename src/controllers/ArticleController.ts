@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Article from '../models/Article';
+import CommentController from './CommentController';
 
 class ArticleController {
 	static form(req: Request, res: Response): void {
@@ -25,6 +26,7 @@ class ArticleController {
 		const articleId = Number(req.path.split('/')[2]);
 		try {
 			const article = await Article.findByPk(articleId);
+			await CommentController.articleComments(articleId)
 			res.render('article/detail', {title: `détail de l'article ${articleId}`, article});
 		} catch {
 			res.render('misc/erreur', {title: '404', message: 'article non trouvé :('});
