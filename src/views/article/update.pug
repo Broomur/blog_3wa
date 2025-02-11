@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+	form(action="/article/create" method="POST")
+		label(for="title") Titre
+		input(type="text" id="title" name="title" value=article.title required)
+
+		label(for="content") Contenu
+		textarea(id="content" name="content" rows="4" required) #{article.content}
+
+		button(type="submit") Envoyer

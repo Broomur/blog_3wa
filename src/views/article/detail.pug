@@ -1,5 +1,22 @@
 extends ../layout
 
 block content
-	h2 #{article.title}
-	p #{article.content}
+	article
+		h2 #{article.title}
+		p #{article.content}
+		if article.editable 
+			a(href="/article/update?id=" + article.id) éditer |
+			a(href="/article/delete?id=" + article.id) supprimer
+
+	if comments.length
+		a(href="/comment/create?article=" + article.id) Ajouter un commentaire
+		each comment in comments
+			section 
+				p #{comment.content}
+				if comment.editable 
+					a(href="/comment/update?id=" + comment.id) éditer |
+					a(href="/comment/delete?id=" + comment.id) supprimer
+	else 
+		p
+			| Pas de commentaire pour l'instant, mais vous pouvez 
+			a(href="/comment/create?article=" + article.id) en ajouter un

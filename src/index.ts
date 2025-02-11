@@ -9,6 +9,7 @@ import HomeRouter from './routes/HomeRouter';
 import SessionMiddleware from './middlewares/sessionMiddleware';
 import AuthMiddleware from './middlewares/authMiddleware';
 import OwnerRouter from './routes/OwnerRouter';
+import CommentRouter from './routes/CommentRouter';
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -36,6 +37,7 @@ app.use(HomeRouter);
 app.use('/article', ArticleRouter);
 app.use(UserRouter);
 app.use('/owner', AuthMiddleware, OwnerRouter);
+app.use('/comment', AuthMiddleware, CommentRouter);
 
 app.listen(port, () => {
 	console.log(`[server]: Server is running at http://localhost:${port}/`);

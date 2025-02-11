@@ -1,0 +1,8 @@
+extend ../layout
+
+block content
+	form(action="/comment/create?article=" + articleId method="POST")
+		label(for="content") Commentaire 
+		textarea(id="content" name="content" row="4")
+
+		button(type="submit") Envoyer
