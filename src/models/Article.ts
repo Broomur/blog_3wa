@@ -1,7 +1,10 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db_connection";
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../db_connection';
+import Owner from './Owner';
 
-class Article extends Model {}
+class Article extends Model {
+  public id!: number;
+};
 
 Article.init(
   {
@@ -27,9 +30,14 @@ Article.init(
   {
     sequelize,
     tableName: 'articles',
-    timestamps: true, 
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at'
   }
 );
+
+Article.belongsTo(Owner, { foreignKey: 'id', as: 'owner'});
+Owner.hasMany(Article, { foreignKey: 'owner_id', as: 'article'});
 
 export default Article;
 
