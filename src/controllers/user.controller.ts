@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import UserRepository from '../models/user/user.repository';
-import OwnerRepository from '../models/owner/owner.repository';
+import { userRepository } from '../models/user/user.repository';
+import { ownerRepository } from '../models/owner/owner.repository';
 import { UserRepositoryInterface } from '../models/user/user.repository.interface';
 import { OwnerRepositoryInterface } from '../models/owner/owner.repository.interface';
 import * as argon2 from 'argon2';
@@ -65,7 +65,5 @@ class UserController {
 		res.redirect('/');
 	}
 }
-const userRespository = new UserRepository();
-const ownerRepository = new OwnerRepository();
 
-export const userController = new UserController(userRespository, ownerRepository);
+export const userController = new UserController(userRepository, ownerRepository);

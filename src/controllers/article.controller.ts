@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import ArticleRepository from '../models/article/article.repository';
-import CommentRepository from '../models/comment/comment.repository';
+import { articleRepository } from '../models/article/article.repository';
+import { commentRepository } from '../models/comment/comment.repository';
 import { ArticleRepositoryInterface } from '../models/article/article.repository.interface';
 import { CommentRepositoryInterface } from '../models/comment/comment.repository.interface';
 
@@ -37,8 +37,6 @@ class ArticleController {
 		try	 {
 			const article = await this.articleRepository.getById(articleId);
 			if (article) {
-				console.log(req.session.userId);
-				console.log(article.owner_id);
 				if (req.session.userId && req.session.userId === article.owner_id)
 					Object.assign(article, { editable: true })
 				const comments = await this.commentRepository.getAll();
@@ -84,8 +82,5 @@ class ArticleController {
 		}
 	}
 }
-
-const articleRepository = new ArticleRepository();
-const commentRepository = new CommentRepository();
 
 export const articleController = new ArticleController(articleRepository, commentRepository);

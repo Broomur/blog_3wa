@@ -1,9 +1,12 @@
+import { Repository } from "typeorm";
 import { AppDataSource } from "../../data-source";
-import { Article } from "./article.model";
+import { Article } from "../../entities/article.entity";
 import { ArticleRepositoryInterface } from "./article.repository.interface";
 
-class ArticleRepository implements ArticleRepositoryInterface {
-	private article = AppDataSource.getRepository(Article);
+export class ArticleRepository implements ArticleRepositoryInterface {
+	constructor(
+		private article: Repository<Article>
+	) {}
 
 	async create(title: string, content: string, owner_id: number): Promise<Article> {
 		const article = this.article.create({
@@ -12,7 +15,6 @@ class ArticleRepository implements ArticleRepositoryInterface {
 			owner: { id: owner_id }
 		});
 		await article.save();
-		console.log(article);
 		return article;
 	}
 
@@ -35,9 +37,12 @@ class ArticleRepository implements ArticleRepositoryInterface {
 		return await this.article.findOneBy({id});
 	}
 
-	async delete(id: number): Promise<boolean> {
-		return !!await this.article.delete({id});
+	async delete(id: number): Promise<void> {
+		await this.article.delete(id);
 	}
 }
 
-export default ArticleRepository;
+
+const article = AppDataSource.getRepository(Article);
+
+export const articleRepository = new ArticleRepository(article);

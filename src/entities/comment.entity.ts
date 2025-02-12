@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { User } from "../user/user.model";
-import { Article } from "../article/article.model";
+import { User } from "./user.entity";
+import { Article } from "./article.entity";
 
 @Entity('comments')
 export class Comment extends BaseEntity {
@@ -22,7 +22,10 @@ export class Comment extends BaseEntity {
 	@Column({ type: 'int', nullable: true })
 	user_id: number;
 
-	@ManyToOne(() => User, (user) => user.comments)
+	@ManyToOne(() => User, (user) => user.comments, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE'
+	})
 	@JoinColumn({
 		name: 'user_id'
 	})
@@ -31,7 +34,10 @@ export class Comment extends BaseEntity {
 	@Column({ type: 'int', nullable: true })
 	article_id: number;
 
-	@ManyToOne(() => Article, (article) => article.comments)
+	@ManyToOne(() => Article, (article) => article.comments, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE'
+	})
 	@JoinColumn({
 		name: 'article_id'
 	})

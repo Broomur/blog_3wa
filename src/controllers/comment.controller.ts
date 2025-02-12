@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { CommentRepositoryInterface } from '../models/comment/comment.repository.interface';
-import CommentRepository from '../models/comment/comment.repository';
+import { commentRepository } from '../models/comment/comment.repository';
 
 class CommentController {
 	constructor(
@@ -57,7 +57,5 @@ class CommentController {
 		}
 	} 
 }
-
-const commentRepository = new CommentRepository();
 
 export const commentController = new CommentController(commentRepository);

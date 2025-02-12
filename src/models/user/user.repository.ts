@@ -1,10 +1,13 @@
 import * as argon2 from 'argon2';
 import { UserRepositoryInterface } from './user.repository.interface';
-import { User } from './user.model';
 import { AppDataSource } from '../../data-source';
+import { User } from '../../entities/user.entity';
+import { Repository } from 'typeorm';
 
-class UserRepository implements UserRepositoryInterface {
-	private user = AppDataSource.getRepository(User);
+export class UserRepository implements UserRepositoryInterface {
+	constructor(
+		private user: Repository<User>
+	) {}
 
 	async create(nickname: string, mail: string, password: string): Promise<User> {
 		const hash = await argon2.hash(password, { type: argon2.argon2id });
@@ -42,4 +45,6 @@ class UserRepository implements UserRepositoryInterface {
 	}
 }
 
-export default UserRepository;
+const user = AppDataSource.getRepository(User);
+
+export const userRepository = new UserRepository(user);

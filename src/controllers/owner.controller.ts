@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import OwnerRepository from '../models/owner/owner.repository';
+import { ownerRepository } from '../models/owner/owner.repository';
 import { OwnerRepositoryInterface } from '../models/owner/owner.repository.interface';
 
 class OwnerController {
@@ -29,7 +29,5 @@ class OwnerController {
 		}
 	}
 }
-
-const ownerRepository = new OwnerRepository();
 
 export const ownerController = new OwnerController(ownerRepository);

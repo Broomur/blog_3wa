@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Owner } from '../owner/owner.model';
-import { Comment } from '../comment/comment.model';
+import { Owner } from './owner.entity';
+import { Comment } from './comment.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
@@ -36,9 +36,15 @@ export class User extends BaseEntity {
 	@UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
 	public updated_at: Date;
 
-	@OneToOne(() => Owner, (owner) => owner.user)
+	@OneToOne(() => Owner, (owner) => owner.user, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE',
+	})
 	owner: Owner;
 
-	@OneToMany(() => Comment, (comment) => comment.user)
+	@OneToMany(() => Comment, (comment) => comment.user, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE',
+	})
 	comments: Comment[];
 }

@@ -1,4 +1,4 @@
-import { Comment } from "./comment.model";
+import { Comment } from "../../entities/comment.entity";
 
 export interface CommentRepositoryInterface {
 	create(content: string, user_id: number, article_id: number): Promise<Comment>;

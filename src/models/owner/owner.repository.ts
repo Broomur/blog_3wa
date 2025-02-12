@@ -1,10 +1,13 @@
 import { OwnerRepositoryInterface } from "./owner.repository.interface";
-import { Owner } from "./owner.model";
 import { AppDataSource } from "../../data-source";
+import { Owner } from "../../entities/owner.entity";
+import { Repository } from "typeorm";
 
 
-class OwnerRepository implements OwnerRepositoryInterface {
-	private owner = AppDataSource.getRepository(Owner);
+export class OwnerRepository implements OwnerRepositoryInterface {
+	constructor(
+		private owner: Repository<Owner>,
+	) {}
 
 	async create(id: number): Promise<Owner> {
 		const owner = this.owner.create({
@@ -31,4 +34,6 @@ class OwnerRepository implements OwnerRepositoryInterface {
 	}
 }
 
-export default OwnerRepository
+const owner = AppDataSource.getRepository(Owner);
+
+export const ownerRepository = new OwnerRepository(owner);

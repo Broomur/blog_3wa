@@ -7,6 +7,9 @@
     "start": "node dist/index.js",
     "dev": "nodemon",
     "db": "docker run -d --rm --name postgres_blog -p 5432:5432 -e POSTGRES_USER=St34m_P1n34ppl3 -e POSTGRES_PASSWORD=M4gn1f1c3nt_L1tch1 -e POSTGRES_DB=blog -v postgres_blog_data:/var/lib/postgresql/data postgres:latest",
+    "db:stop": "docker stop blog",
+    "db:test": "docker run -d --rm --name test -p 5432:5432 -e POSTGRES_USER=St34m_P1n34ppl3 -e POSTGRES_PASSWORD=M4gn1f1c3nt_L1tch1 -e POSTGRES_DB=test postgres:latest",
+    "db:test:stop": "docker stop test",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
@@ -29,6 +32,7 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   },
@@ -36,6 +40,7 @@
     "argon2": "^0.41.1",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "jest-mock-extended": "^4.0.0-beta1",
     "pg": "^8.13.2",
     "pg-hstore": "^2.3.4",
     "pug": "^3.0.3",

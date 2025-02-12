@@ -1,9 +1,12 @@
+import { Repository } from "typeorm";
 import { AppDataSource } from "../../data-source";
-import { Comment } from "./comment.model";
+import { Comment } from "../../entities/comment.entity";
 import { CommentRepositoryInterface } from "./comment.repository.interface";
 
-class CommentRepository implements CommentRepositoryInterface {
-	private comment = AppDataSource.getRepository(Comment);
+export class CommentRepository implements CommentRepositoryInterface {
+	constructor(
+		private comment: Repository<Comment>
+	) {}
 
 	async create(content: string, user_id: number, article_id: number): Promise<Comment> {
 		const comment = this.comment.create({
@@ -45,4 +48,7 @@ class CommentRepository implements CommentRepositoryInterface {
 	}
 }
 
-export default CommentRepository
+
+const comment = AppDataSource.getRepository(Comment);
+
+export const commentRepository = new CommentRepository(comment);

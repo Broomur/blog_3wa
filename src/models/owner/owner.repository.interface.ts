@@ -1,4 +1,4 @@
-import { Owner } from "./owner.model";
+import { Owner } from "../../entities/owner.entity";
 
 export interface OwnerRepositoryInterface {
 	create(id: number): Promise<Owner>;

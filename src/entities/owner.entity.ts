@@ -1,6 +1,6 @@
 import { BaseEntity, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Article } from "../article/article.model";
-import { User } from "../user/user.model";
+import { Article } from "./article.entity";
+import { User } from "./user.entity";
 
 @Entity('owners')
 export class Owner extends BaseEntity {
@@ -13,10 +13,16 @@ export class Owner extends BaseEntity {
 	@UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
 	public updated_at: Date;
 
-	@OneToMany(() => Article, (article) => article.owner)
+	@OneToMany(() => Article, (article) => article.owner, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE'
+	})
 	articles: Article[];
 
-	@OneToOne(() => User, (user) => user.owner)
+	@OneToOne(() => User, (user) => user.owner, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE'
+	})
 	@JoinColumn({
 		name: 'id'
 	})

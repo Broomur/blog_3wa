@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, ManyToOne, OneToMany, JoinColumn, UpdateDateColumn, CreateDateColumn } from 'typeorm';
-import { Owner } from '../owner/owner.model';
-import { Comment } from '../comment/comment.model';
+import { Owner } from './owner.entity';
+import { Comment } from './comment.entity';
 
 
 @Entity('articles')
@@ -28,12 +28,18 @@ export class Article extends BaseEntity {
 	@Column({ type: 'int', nullable: true })
 	owner_id: number
 
-	@ManyToOne(() => Owner, (owner) => owner.articles)
+	@ManyToOne(() => Owner, (owner) => owner.articles, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE'
+	})
 	@JoinColumn({
 		name: 'owner_id'
 	})
 	owner: Owner;
 
-	@OneToMany(() => Comment, (comment) => comment.article)
+	@OneToMany(() => Comment, (comment) => comment.article, {
+		onDelete: 'CASCADE',
+		onUpdate: 'CASCADE'
+	})
 	comments: Comment[];
 };
