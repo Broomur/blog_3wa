@@ -1,22 +1,22 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv'
-import ArticleRouter from './routes/ArticleRouter';
+import express, { Express } from 'express';
+import ArticleRouter from './routes/article.router';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
-import UserRouter from './routes/UserRouter';
-import HomeRouter from './routes/HomeRouter';
-import SessionMiddleware from './middlewares/sessionMiddleware';
-import AuthMiddleware from './middlewares/authMiddleware';
-import OwnerRouter from './routes/OwnerRouter';
-import CommentRouter from './routes/CommentRouter';
+import UserRouter from './routes/user.router';
+import HomeRouter from './routes/home.router';
+import SessionMiddleware from './middlewares/session.middleware';
+import AuthMiddleware from './middlewares/auth.middleware';
+import OwnerRouter from './routes/owner.router';
+import CommentRouter from './routes/comment.router';
+import { environment } from './environment.dev';
+import { env } from 'process';
 
-dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = environment.port;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -27,7 +27,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 app.use(session({
 	name: "user",
-	secret: process.env.SECRET || 'B4n4n4',
+	secret: environment.secret,
 	resave: false,
 	saveUninitialized: false
 }));

@@ -1,21 +1,25 @@
 import { Request, Response } from 'express';
-import Article from '../models/article/Article';
-import CommentController from './CommentController';
-import Comment from '../models/comment/Comment';
-import ArticleRepository from '../models/article/ArticleRepository';
-import CommentRepository from '../models/comment/CommentRepository';
+import ArticleRepository from '../models/article/article.repository';
+import CommentRepository from '../models/comment/comment.repository';
+import { ArticleRepositoryInterface } from '../models/article/article.repository.interface';
+import { CommentRepositoryInterface } from '../models/comment/comment.repository.interface';
 
 class ArticleController {
-	static form(req: Request, res: Response): void {
+	constructor(
+		private articleRepository: ArticleRepositoryInterface,
+		private commentRepository: CommentRepositoryInterface
+	) {}
+
+	form(req: Request, res: Response): void {
 		res.render('article/create', {title: 'Rédaction d\'un article'});
 	}
 
-	static async create(req: Request, res: Response): Promise<void> {
+	async create(req: Request, res: Response): Promise<void> {
 		const { title, content } = req.body;
 		try {
 			const owner_id = req.session.userId;
 			if (owner_id) {
-				const article = await ArticleRepository.create(
+					const article = await this.articleRepository.create(
 						title,
 						content,
 						owner_id
@@ -28,14 +32,16 @@ class ArticleController {
 		}
 	}
 
-	static async detail(req: Request, res: Response): Promise<void> {
+	async detail(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.path.split('/')[2]);
-		try {
-			const article = await ArticleRepository.getById(articleId);
+		try	 {
+			const article = await this.articleRepository.getById(articleId);
 			if (article) {
+				console.log(req.session.userId);
+				console.log(article.owner_id);
 				if (req.session.userId && req.session.userId === article.owner_id)
 					Object.assign(article, { editable: true })
-				const comments = await CommentRepository.getAll();
+				const comments = await this.commentRepository.getAll();
 				for (let comment of comments)
 					if (req.session.userId && comment.user_id === req.session.userId)
 						Object.assign(comment, { editable: true});
@@ -46,32 +52,32 @@ class ArticleController {
 		}
 	}
 
-	static async list(req: Request, res: Response): Promise<void> {
-		const articles = await ArticleRepository.getAll();
+	async list(req: Request, res: Response): Promise<void> {
+		const articles = await this.articleRepository.getAll();
 		res.render('article/list', {title: 'liste des articles', articles})
 	}
 
-	static async formUpdate(req: Request, res: Response): Promise<void> {
+	async formUpdate(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
-		const article = await ArticleRepository.getById(articleId);
+		const article = await this.articleRepository.getById(articleId);
 		res.render('article/update', {title: 'Editer un article', article});
 	}
 
-	static async updateArticle(req: Request, res: Response): Promise<void> {
+	async updateArticle(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
 		try {
 			const { title, content } = req.body;
-			await ArticleRepository.update(articleId, { title, content });
+			await this.articleRepository.update(articleId, { title, content });
 			res.redirect(`/article/detail/${articleId}`);
 		} catch {
 			res.status(500).redirect(`/article/detail/${articleId}`);
 		}
 	}
 
-	static async delete(req: Request, res: Response): Promise<void> {
+	async delete(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
 		try {
-			await ArticleRepository.delete(articleId);
+			await this.articleRepository.delete(articleId);
 			res.redirect('/article/list');
 		} catch {
 			res.status(500).redirect('/');
@@ -79,4 +85,7 @@ class ArticleController {
 	}
 }
 
-export default ArticleController;
+const articleRepository = new ArticleRepository();
+const commentRepository = new CommentRepository();
+
+export const articleController = new ArticleController(articleRepository, commentRepository);
