@@ -41,7 +41,7 @@ class ArticleController {
 				console.log(article.owner_id);
 				if (req.session.userId && req.session.userId === article.owner_id)
 					Object.assign(article, { editable: true })
-				const comments = await this.commentRepository.getAll();
+				const comments = await this.commentRepository.getByArticle(articleId);
 				for (let comment of comments)
 					if (req.session.userId && comment.user_id === req.session.userId)
 						Object.assign(comment, { editable: true});
@@ -67,7 +67,7 @@ class ArticleController {
 		const articleId = Number(req.query['id']);
 		try {
 			const { title, content } = req.body;
-			await this.articleRepository.update(articleId, { title, content });
+			await this.articleRepository.updateById(articleId, { title, content });
 			res.redirect(`/article/detail/${articleId}`);
 		} catch {
 			res.status(500).redirect(`/article/detail/${articleId}`);
@@ -76,7 +76,10 @@ class ArticleController {
 
 	async delete(req: Request, res: Response): Promise<void> {
 		const articleId = Number(req.query['id']);
+		const comments = await this.commentRepository.getByArticle(articleId);
 		try {
+			for (let comment of comments) {
+			await this.commentRepository.delete(comment.id)}
 			await this.articleRepository.delete(articleId);
 			res.redirect('/article/list');
 		} catch {

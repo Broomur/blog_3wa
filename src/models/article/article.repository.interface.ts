@@ -5,6 +5,6 @@ export interface ArticleRepositoryInterface {
 	getById(id: number): Promise<Article | null>;
 	getAll(): Promise<Article[]>;
 	getByOwner(owner_id: number): Promise<Article[]>;
-	update(id: number, data: Partial<Article>): Promise<Article | null>;
+	updateById(id: number, data: Partial<Article>): Promise<Article | null>;
 	delete(id: number): Promise<boolean>;
 }
